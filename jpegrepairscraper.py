@@ -4,27 +4,31 @@ from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 import os
 
+img_path = os.getcwd() + '/images/'
+
+#options = webdriver.ChromeOptions()
+#prefs = {"download.default_directory" : img_path + "/restored/"}
+#options.add_experimental_option("prefs",prefs)
+
+#driver = webdriver.Chrome(options=options)
 driver = webdriver.Chrome()
 driver.implicitly_wait(3)
 
-driver.get('https://jpg.repair')
-s = driver.find_element(By.XPATH, "//input[@type='file']")
 
-img_path = os.getcwd() + '/images/'
+for i in os.listdir(img_path + "/corrupted/"):
+    driver.get('https://jpg.repair')
 
-s.send_keys(img_path + 'uncorrupted.jpg')
+    driver.find_element(By.XPATH, "//input[@type='file']").send_keys(img_path + 'corrupted/' + i)
 
-sleep(15)
-print("1")
+    sleep(15)
 
-try:
-    print("2")
-    driver.find_element(By.XPATH, "//a[@onclick='checkFullDownload($mUserToken)']").click()
+    try:
+        driver.find_element(By.XPATH, "//a[@onclick='checkFullDownload($mUserToken)']").click()
 
-except NoSuchElementException:
-    driver.find_element(By.XPATH, "//input[@multiple='false']").send_keys(img_path + 'reference.jpg')
-    print("3")
-
-sleep(5)
+    except NoSuchElementException:
+        driver.find_element(By.XPATH, "//input[@style='font-size: 50px; opacity: 0; position: absolute; right: -3px; top: -3px; z-index: 999;']").send_keys(img_path + 'reference.jpg')
+        sleep(10)
+        driver.find_element(By.XPATH, "//a[@onclick='checkFullDownload($mUserToken)']").click()
 
 
+    sleep(10)
