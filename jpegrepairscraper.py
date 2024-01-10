@@ -26,15 +26,16 @@ for i, j in enumerate(os.listdir(img_path + "/corrupted/")):
 
 
     except NoSuchElementException:
+        driver.implicitly_wait(60)
         driver.find_element(By.XPATH,
                             "//input[@style='font-size: 50px; opacity: 0; position: absolute; right: -3px; top: -3px; z-index: 999;']") \
                             .send_keys(img_path + 'reference.jpg')
-        driver.implicitly_wait(60)
-
+        
         driver.find_element(By.XPATH, "//a[@onclick='checkFullDownload($mUserToken)']").click()
 
+    os.remove(img_path + 'corrupted/' + j)
     sleep(3)
-    print(f"Image no. {i + 1} downloading")
+    print(f"Image no. {i + 1} downloaded")
 
     if i + 1 == len(os.listdir(img_path + "/corrupted/")):
         sleep(15)
