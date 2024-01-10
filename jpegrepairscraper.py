@@ -12,23 +12,32 @@ img_path = os.getcwd() + '/images/'
 
 #driver = webdriver.Chrome(options=options)
 driver = webdriver.Chrome()
-driver.implicitly_wait(3)
+driver.implicitly_wait(60)
 
 
-for i in os.listdir(img_path + "/corrupted/"):
+for i, j in enumerate(os.listdir(img_path + "/corrupted/")):
     driver.get('https://jpg.repair')
 
-    driver.find_element(By.XPATH, "//input[@type='file']").send_keys(img_path + 'corrupted/' + i)
+    driver.find_element(By.XPATH, "//input[@type='file']").send_keys(img_path + 'corrupted/' + j)
 
-    sleep(15)
+    # This is an element that appears on all pages after the fixing page so we can identify when
+    # fixing has finished with implicit wait
+    driver.find_element(By.XPATH, "//div[@id='removetask']")
+    driver.implicitly_wait(5)
 
     try:
         driver.find_element(By.XPATH, "//a[@onclick='checkFullDownload($mUserToken)']").click()
+        driver.implicitly_wait(60)
+
 
     except NoSuchElementException:
         driver.find_element(By.XPATH, "//input[@style='font-size: 50px; opacity: 0; position: absolute; right: -3px; top: -3px; z-index: 999;']").send_keys(img_path + 'reference.jpg')
-        sleep(10)
+        driver.implicitly_wait(60)
         driver.find_element(By.XPATH, "//a[@onclick='checkFullDownload($mUserToken)']").click()
 
+    sleep(3)
 
-    sleep(10)
+    if i + 1 == len(os.listdir(img_path + "/corrupted/")):
+        sleep(15)
+
+input("Image decorruption successful, press any key to close")
